@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chimerical Colors — Warna yang Tidak Seharusnya Ada</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --text: #e8e8e8;
+    --muted: #666666;
+    --accent: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    animation: fadeIn 0.4s ease;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HOME */
+  .home-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .home-header .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .home-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 8vw, 72px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .home-header h1 span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.5em;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-top: 8px;
+  }
+
+  .home-header p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* COLOR CARDS */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 40px;
+  }
+
+  .color-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .color-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-color, #ffffff);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .color-card:hover::before { transform: scaleX(1); }
+
+  .color-card:hover {
+    border-color: #444;
+    transform: translateY(-2px);
+  }
+
+  .card-number {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .card-subtitle {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .card-difficulty {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .difficulty-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .dot.filled { background: var(--card-color, #666); }
+
+  .card-arrow {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--muted);
+    transition: all 0.2s ease;
+  }
+
+  .color-card:hover .card-arrow {
+    color: var(--text);
+    transform: translateY(-50%) translateX(3px);
+  }
+
+  /* EXPERIMENT SCREEN */
+  .experiment-container {
+    width: 100%;
+    max-width: 700px;
+  }
+
+  .exp-header {
+    margin-bottom: 40px;
+  }
+
+  .back-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+
+  .back-btn:hover {
+    border-color: #444;
+    color: var(--text);
+  }
+
+  .exp-number {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .exp-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .exp-tagline {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* STEP SYSTEM */
+  .step-progress {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 32px;
+  }
+
+  .step-bar {
+    height: 2px;
+    flex: 1;
+    background: var(--border);
+    transition: background 0.3s ease;
+  }
+
+  .step-bar.done { background: var(--accent); }
+  .step-bar.active { background: var(--muted); }
+
+  .step-panel {
+    display: none;
+  }
+
+  .step-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .step-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .step-instruction {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .step-instruction strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* COLOR DISPLAY */
+  .color-display {
+    width: 100%;
+    height: 240px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    cursor: crosshair;
+  }
+
+  .color-display .focus-dot {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    z-index: 10;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+  }
+
+  .color-display .label {
+    position: absolute;
+    bottom: 12px; left: 16px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    mix-blend-mode: difference;
+  }
+
+  /* TIMER */
+  .timer-container {
+    margin-bottom: 24px;
+  }
+
+  .timer-display {
+    font-family: 'Syne', sans-serif;
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+  }
+
+  .timer-display.warning { color: #ff6b35; }
+  .timer-display.done { color: #44ff88; }
+
+  .timer-bar-track {
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timer-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 1s linear, background 0.3s ease;
+  }
+
+  .timer-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 14px 28px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--accent);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--muted);
+  }
+
+  .btn-secondary:hover {
+    border-color: #444;
+    color: var(--text);
+  }
+
+  .btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* SCIENCE BOX */
+  .science-box {
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-top: 24px;
+  }
+
+  .science-box .label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .science-box p {
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .science-box p strong {
+    color: var(--text);
+  }
+
+  /* WARNING */
+  .warning-box {
+    border: 1px solid #ff6b3530;
+    background: #ff6b3508;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: 12px;
+    color: #ff6b35;
+    line-height: 1.7;
+  }
+
+  /* RESULT */
+  .result-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .result-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: left;
+    transition: all 0.2s ease;
+    line-height: 1.5;
+  }
+
+  .result-btn:hover {
+    border-color: #444;
+    color: var(--text);
+  }
+
+  .result-btn.selected {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* SPLIT DISPLAY */
+  .split-display {
+    width: 100%;
+    height: 240px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .split-left, .split-right {
+    flex: 1;
+  }
+
+  .split-divider {
+    width: 2px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .focus-crosshair {
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* FULLSCREEN MODE */
+  .fullscreen-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+
+  .fullscreen-overlay.active { display: flex; }
+
+  .fullscreen-center-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.7);
+    position: absolute;
+    animation: pulse 1.5s infinite;
+  }
+
+  .fullscreen-timer {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Syne', sans-serif;
+    font-size: 80px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: -0.04em;
+    pointer-events: none;
+  }
+
+  .fullscreen-hint {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    pointer-events: none;
+  }
+
+  .fullscreen-escape {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.4);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 8px 14px;
+    cursor: pointer;
+    z-index: 1001;
+  }
+
+  /* NAVIGATION FOOTER */
+  .nav-footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    width: 100%;
+    max-width: 700px;
+  }
+
+  .nav-footer p {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  @media (max-width: 600px) {
+    .color-grid { grid-template-columns: 1fr; }
+    .result-options { grid-template-columns: 1fr; }
+    .timer-display { font-size: 40px; }
+    .btn-row { flex-direction: column; }
+    .btn { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HOME SCREEN -->
+<div class="screen active" id="screen-home">
+  <div style="width:100%; max-width:900px;">
+    <div class="home-header">
+      <div class="eyebrow">Neuroscience Visual Lab</div>
+      <h1>Chimerical Colors
+        <span>Warna yang tidak seharusnya ada</span>
+      </h1>
+      <p>Warna-warna ini tidak bisa difoto, tidak bisa ditampilkan di layar manapun secara normal, dan tidak eksis di dunia fisik — tapi otakmu bisa mengalaminya secara nyata.</p>
+    </div>
+
+    <div class="color-grid">
+
+      <div class="color-card" style="--card-color: #4a9eff;" onclick="startExperiment('stygian-blue')">
+        <div class="card-number">01 / 05</div>
+        <div class="card-title">Stygian Blue</div>
+        <div class="card-subtitle">Biru yang lebih gelap dari hitam. Impossible secara fisika — hitam adalah nol cahaya, tidak ada yang lebih gelap. Tapi otakmu bisa menciptakannya.</div>
+        <div class="card-difficulty">
+          <div class="difficulty-dots">
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          Mudah
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="color-card" style="--card-color: #ff4444;" onclick="startExperiment('self-luminous-red')">
+        <div class="card-number">02 / 05</div>
+        <div class="card-title">Self-Luminous Red</div>
+        <div class="card-subtitle">Merah yang terasa memancarkan cahaya dari dalam dirinya sendiri — dengan intensitas melampaui kemampuan fisik layar manapun.</div>
+        <div class="card-difficulty">
+          <div class="difficulty-dots">
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          Mudah
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="color-card" style="--card-color: #ff8800;" onclick="startExperiment('hyperbolic-orange')">
+        <div class="card-number">03 / 05</div>
+        <div class="card-title">Hyperbolic Orange</div>
+        <div class="card-subtitle">Oranye dengan saturasi yang melampaui batas fisika — lebih oranye dari matahari terbenam, lebih oranye dari apapun yang bisa dibuat secara fisik.</div>
+        <div class="card-difficulty">
+          <div class="difficulty-dots">
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          Mudah
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="color-card" style="--card-color: #44ff88;" onclick="startExperiment('stygian-green')">
+        <div class="card-number">04 / 05</div>
+        <div class="card-title">Stygian Green</div>
+        <div class="card-subtitle">Versi hijau dari Stygian Blue. Hijau yang terasa menelan pandanganmu — lebih dalam dari kegelapan total.</div>
+        <div class="card-difficulty">
+          <div class="difficulty-dots">
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          Mudah
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="color-card" style="--card-color: #ff44ff;" onclick="startExperiment('forbidden-rg')">
+        <div class="card-number">05 / 05</div>
+        <div class="card-title">Forbidden Red-Green</div>
+        <div class="card-subtitle">Warna yang sistem visual manusia secara biologis tidak bisa hasilkan secara normal. Butuh konsentrasi penuh. Tidak selalu berhasil.</div>
+        <div class="card-difficulty">
+          <div class="difficulty-dots">
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+          </div>
+          Sulit
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+
+    </div>
+
+    <div class="nav-footer">
+      <p>Semua eksperimen aman. Efek bersifat sementara (beberapa detik). Tidak dianjurkan untuk penderita epilepsi fotosensitif.</p>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERIMENT SCREEN -->
+<div class="screen" id="screen-experiment">
+  <div class="experiment-container" id="exp-content">
+    <!-- Filled by JS -->
+  </div>
+</div>
+
+<!-- FULLSCREEN OVERLAY -->
+<div class="fullscreen-overlay" id="fullscreen-overlay">
+  <button class="fullscreen-escape" onclick="exitFullscreen()">ESC — KELUAR</button>
+  <div class="fullscreen-hint" id="fs-hint">JANGAN BERKEDIP — TATAP TITIK TENGAH</div>
+  <div class="fullscreen-center-dot"></div>
+  <div class="fullscreen-timer" id="fs-timer">60</div>
+</div>
+
+<script>
+const experiments = {
+  'stygian-blue': {
+    number: '01 / 05',
+    title: 'Stygian Blue',
+    tagline: 'Biru yang lebih gelap dari hitam',
+    color: '#4a9eff',
+    steps: [
+      {
+        label: 'Persiapan',
+        instruction: 'Pastikan layar dalam kondisi <strong>brightness maksimum</strong> dan ruangan <strong>agak gelap</strong>. Duduk dengan jarak normal dari layar (40-60cm). Kamu akan menatap warna oranye selama 60 detik — ini fase kalibrasi otakmu.',
+        action: 'prepare',
+        btnText: 'Siap — Mulai Fase 1'
+      },
+      {
+        label: 'Fase 1 — Kelelahan Reseptor',
+        instruction: 'Tatap titik putih di tengah kotak oranye. <strong>Jangan gerakkan mata.</strong> Jangan berkedip sebisa mungkin. Timer akan berjalan 60 detik. Layar penuh direkomendasikan.',
+        action: 'phase1',
+        color1: '#FF8C00',
+        bg1: '#FF8C00',
+        label1: 'TATAP TITIK INI — JANGAN BERKEDIP',
+        duration: 60,
+        btnText: 'Mode Layar Penuh'
+      },
+      {
+        label: 'Fase 2 — Target',
+        instruction: '<strong>Segera</strong> pindahkan pandangan ke titik putih di tengah kotak biru ini. Jangan tunda. Yang akan kamu rasakan: biru ini terasa berbeda dari biru biasa — lebih dalam, lebih gelap, seolah menyerap cahaya alih-alih memantulkannya.',
+        action: 'phase2',
+        color1: '#1a44ff',
+        bg1: '#1a44ff',
+        label1: 'PINDAHKAN PANDANGAN KE SINI — SEKARANG',
+        duration: 15,
+        btnText: 'Lihat Sekarang'
+      },
+      {
+        label: 'Hasil',
+        instruction: 'Apa yang kamu alami?',
+        action: 'result',
+        results: [
+          { text: '✓ Berhasil — biru terasa lebih gelap dari normal, hampir seperti lubang', success: true },
+          { text: '△ Sedikit berbeda tapi tidak dramatis', success: false },
+          { text: '✗ Tidak ada efek yang terasa', success: false },
+          { text: '◎ Butuh coba lagi', retry: true }
+        ]
+      }
+    ],
+    science: 'Sistem visual menggunakan <strong>opponent processing</strong> — neuron yang dikodekan untuk biru/kuning saling menginhibisi. Setelah menatap oranye lama, neuron yang merespons oranye/kuning kelelahan dan down-regulate. Ketika melihat biru, otak membandingkannya dengan baseline yang sudah bergeser — menghasilkan persepsi biru di bawah level hitam normal. Ini secara fisika tidak mungkin (hitam = nol foton), tapi otakmu menciptakannya.'
+  },
+
+  'self-luminous-red': {
+    number: '02 / 05',
+    title: 'Self-Luminous Red',
+    tagline: 'Merah yang bersinar dari dalam',
+    color: '#ff4444',
+    steps: [
+      {
+        label: 'Persiapan',
+        instruction: 'Atur brightness layar ke <strong>maksimum</strong>. Ruangan gelap akan memperkuat efek. Kamu akan melihat merah yang terasa memancarkan cahaya sendiri — intensitasnya melampaui kemampuan fisik layar manapun. Ini adalah salah satu efek yang paling dramatis.',
+        action: 'prepare',
+        btnText: 'Lanjut ke Fase 1'
+      },
+      {
+        label: 'Fase 1 — Kelelahan Reseptor',
+        instruction: 'Tatap titik di tengah kotak <strong>cyan terang</strong> ini tanpa berkedip selama <strong>90 detik</strong>. Semakin lama kamu tahan, semakin dramatis hasilnya. Gunakan mode layar penuh untuk efek terbaik.',
+        action: 'phase1',
+        color1: '#00e5ff',
+        bg1: '#00e5ff',
+        label1: 'TATAP TITIK INI — 90 DETIK',
+        duration: 90,
+        btnText: 'Mode Layar Penuh'
+      },
+      {
+        label: 'Fase 2 — Target',
+        instruction: '<strong>Langsung</strong> alihkan pandangan ke titik di tengah merah ini. Yang akan kamu rasakan: merah ini tidak terlihat seperti merah di layar biasa — terasa ada sumber cahaya di baliknya, seperti memancarkan dari dalam.',
+        action: 'phase2',
+        color1: '#cc0000',
+        bg1: '#000000',
+        label1: 'PINDAH KE SINI SEKARANG',
+        duration: 15,
+        btnText: 'Lihat Sekarang'
+      },
+      {
+        label: 'Hasil',
+        instruction: 'Apa yang kamu rasakan dengan merahnya?',
+        action: 'result',
+        results: [
+          { text: '✓ Merah terasa bersinar sendiri — seperti ada lampu di baliknya', success: true },
+          { text: '✓ Intensitasnya terasa melampaui layar biasa', success: true },
+          { text: '△ Sedikit berbeda tapi tidak dramatis', success: false },
+          { text: '◎ Coba lagi dengan tatap 90 detik penuh', retry: true }
+        ]
+      }
+    ],
+    science: 'Cyan adalah komplemen dari merah dalam sistem opponent. Setelah reseptor M dan S (hijau dan biru) kelelahan dari menatap cyan, otak mengkompensasi dengan <strong>meningkatkan gain</strong> pada channel L-cone (merah). Ketika akhirnya melihat merah, sinyal merah diinterpretasikan jauh melebihi intensitas fisiknya — menciptakan persepsi kecerahan yang tidak bisa direproduksi secara fisik.'
+  },
+
+  'hyperbolic-orange': {
+    number: '03 / 05',
+    title: 'Hyperbolic Orange',
+    tagline: 'Oranye yang melampaui batas saturasi fisika',
+    color: '#ff8800',
+    steps: [
+      {
+        label: 'Persiapan',
+        instruction: 'Hyperbolic Orange adalah demonstrasi paling jelas bahwa <strong>warna adalah konstruksi otak</strong>, bukan properti cahaya. Saturasi yang akan kamu rasakan tidak bisa direproduksi oleh cat, layar, atau sumber cahaya manapun di dunia nyata.',
+        action: 'prepare',
+        btnText: 'Mulai Eksperimen'
+      },
+      {
+        label: 'Fase 1 — Kelelahan Reseptor',
+        instruction: 'Tatap titik tengah kotak <strong>biru jenuh</strong> ini selama <strong>60 detik</strong>. Kunci pandanganmu di titik tengah — jangan sampai mata bergerak.',
+        action: 'phase1',
+        color1: '#0000dd',
+        bg1: '#0000dd',
+        label1: 'TATAP TITIK PUTIH INI',
+        duration: 60,
+        btnText: 'Mode Layar Penuh'
+      },
+      {
+        label: 'Fase 2 — Target',
+        instruction: '<strong>Segera</strong> pindah ke oranye ini. Saturasi yang kamu rasakan akan terasa supernatural — lebih oranye dari apapun yang pernah kamu lihat. Sering digambarkan sebagai "oranye dari dimensi lain."',
+        action: 'phase2',
+        color1: '#ff6600',
+        bg1: '#ff6600',
+        label1: 'PINDAHKAN PANDANGAN KE SINI',
+        duration: 15,
+        btnText: 'Lihat Sekarang'
+      },
+      {
+        label: 'Hasil',
+        instruction: 'Bagaimana oranye yang kamu lihat?',
+        action: 'result',
+        results: [
+          { text: '✓ Saturasi terasa supernatural — melampaui oranye apapun yang pernah ada', success: true },
+          { text: '✓ Oranye terasa lebih "hidup" dari biasanya', success: true },
+          { text: '△ Sedikit lebih cerah tapi tidak dramatis', success: false },
+          { text: '◎ Coba lagi — pastikan biru di fase 1 benar-benar jenuh', retry: true }
+        ]
+      }
+    ],
+    science: 'Biru dan oranye adalah warna opponent. Setelah reseptor S-cone (biru) kelelahan, otak meningkatkan sensitivitas terhadap komplemen — dalam hal ini oranye/kuning. Ketika melihat oranye, semua channel yang tersisa (terutama L-cone) aktif maksimal sambil S-cone masih down-regulated. Hasilnya: persepsi oranye dengan <strong>chroma yang melampaui gamut fisika normal</strong>.'
+  },
+
+  'stygian-green': {
+    number: '04 / 05',
+    title: 'Stygian Green',
+    tagline: 'Hijau yang lebih dalam dari kegelapan',
+    color: '#44ff88',
+    steps: [
+      {
+        label: 'Persiapan',
+        instruction: 'Stygian Green bekerja dengan prinsip yang sama dengan Stygian Blue — menggunakan kelelahan reseptor untuk menciptakan persepsi warna di bawah level hitam normal. Kali ini dengan hijau sebagai targetnya.',
+        action: 'prepare',
+        btnText: 'Lanjut ke Fase 1'
+      },
+      {
+        label: 'Fase 1 — Kelelahan Reseptor',
+        instruction: 'Tatap titik tengah kotak <strong>magenta terang</strong> ini selama <strong>60 detik</strong>. Magenta adalah komplemen dari hijau dalam sistem opponent. Jangan berkedip dan jangan gerakkan mata.',
+        action: 'phase1',
+        color1: '#ff00aa',
+        bg1: '#ff00aa',
+        label1: 'TATAP TITIK INI — JANGAN BERKEDIP',
+        duration: 60,
+        btnText: 'Mode Layar Penuh'
+      },
+      {
+        label: 'Fase 2 — Target',
+        instruction: '<strong>Langsung</strong> pindahkan pandangan ke hijau ini. Perhatikan bagaimana hijau ini terasa berbeda — lebih gelap dari hitam, seperti menyerap cahaya di sekitarnya.',
+        action: 'phase2',
+        color1: '#004400',
+        bg1: '#000000',
+        label1: 'PINDAHKAN PANDANGAN KE HIJAU INI',
+        duration: 15,
+        btnText: 'Lihat Sekarang'
+      },
+      {
+        label: 'Hasil',
+        instruction: 'Bagaimana hijau yang kamu alami?',
+        action: 'result',
+        results: [
+          { text: '✓ Hijau terasa lebih gelap dari background hitam — seperti lubang', success: true },
+          { text: '✓ Ada kualitas yang berbeda dari hijau normal', success: true },
+          { text: '△ Sedikit aneh tapi tidak dramatic', success: false },
+          { text: '◎ Coba lagi dengan magenta yang lebih terang', retry: true }
+        ]
+      }
+    ],
+    science: 'Identik dengan mekanisme Stygian Blue, tapi menggunakan <strong>axis opponent merah-hijau</strong>. Magenta mengkelelahkan channel L dan S (merah dan biru), meninggalkan M-cone (hijau) dalam kondisi relatif lebih sensitif — tapi dengan baseline luminansi yang sudah bergeser ke bawah. Hasilnya: hijau yang dipersepsikan di bawah nol luminansi.'
+  },
+
+  'forbidden-rg': {
+    number: '05 / 05',
+    title: 'Forbidden Red-Green',
+    tagline: 'Warna yang secara biologis tidak seharusnya ada',
+    color: '#ff44ff',
+    steps: [
+      {
+        label: 'Persiapan — Baca Dulu',
+        instruction: 'Ini yang paling sulit. Sistem opponent manusia <strong>secara biologis mencegah</strong> merah dan hijau aktif bersamaan — seperti hot dan cold secara simultan. Yang akan kamu coba: memaksa kedua sistem aktif sekaligus dengan teknik visual fusion. <strong>Tidak selalu berhasil</strong> — butuh konsentrasi dan kesabaran.',
+        action: 'prepare',
+        btnText: 'Saya Mengerti — Lanjut'
+      },
+      {
+        label: 'Teknik — Stereoscopic Fusion',
+        instruction: 'Dua kotak akan muncul berdampingan — <strong>merah di kiri, hijau di kanan</strong>. Kamu perlu "menyatukan" keduanya dengan teknik <strong>divergent fusion</strong>:\n\n1. Fokus ke titik di antara dua kotak\n2. Perlahan relakskan fokus — seperti melihat gambar stereogram (Magic Eye)\n3. Biarkan matamu sedikit "menyimpang" ke luar\n4. Saat berhasil, kamu melihat TIGA kotak — yang tengah adalah fusion\n5. Pertahankan posisi itu selama mungkin',
+        action: 'phase-fusion',
+        duration: 0,
+        btnText: 'Mulai'
+      },
+      {
+        label: 'Hasil',
+        instruction: 'Apa yang kamu alami di kotak tengah (fusion)?',
+        action: 'result',
+        results: [
+          { text: '✓ Ada warna di tengah yang tidak bisa aku deskripsikan — bukan coklat, bukan kuning', success: true },
+          { text: '✓ Kotak tengah punya kualitas aneh yang tidak ada namanya', success: true },
+          { text: '△ Terlihat tiga kotak tapi warna tengah seperti coklat biasa', success: false },
+          { text: '✗ Tidak bisa melakukan fusion sama sekali', success: false }
+        ]
+      }
+    ],
+    science: '<strong>Opponent color neurons</strong> secara normal didesain agar merah dan hijau tidak bisa aktif bersamaan — mereka saling menginhibisi. Dengan memaksa kedua gambar ke dua mata berbeda melalui fusion, sistem visual dipaksa untuk merekonsiliasi dua sinyal yang normalnya tidak kompatibel. Hasilnya adalah persepsi yang tidak ada representasinya dalam memori visual — <strong>warna yang tidak punya nama karena tidak pernah ada dalam pengalaman normal manusia</strong>.'
+  }
+};
+
+let currentExp = null;
+let currentStep = 0;
+let timerInterval = null;
+let fsTimerInterval = null;
+
+function startExperiment(id) {
+  currentExp = experiments[id];
+  currentStep = 0;
+  showScreen('screen-experiment');
+  renderStep();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+  clearTimers();
+  exitFullscreen();
+  showScreen('screen-home');
+}
+
+function renderStep() {
+  const exp = currentExp;
+  const step = exp.steps[currentStep];
+  const container = document.getElementById('exp-content');
+
+  // Progress bars
+  const bars = exp.steps.map((s, i) => {
+    let cls = '';
+    if (i < currentStep) cls = 'done';
+    else if (i === currentStep) cls = 'active';
+    return `<div class="step-bar ${cls}"></div>`;
+  }).join('');
+
+  let actionHTML = '';
+
+  if (step.action === 'prepare') {
+    actionHTML = `
+      <div class="warning-box">
+        ⚠ Jangan lakukan ini jika kamu punya kondisi epilepsi fotosensitif. Efek bersifat sementara dan aman.
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="nextStep()">${step.btnText}</button>
+      </div>
+    `;
+  }
+
+  else if (step.action === 'phase1') {
+    actionHTML = `
+      <div class="color-display" style="background: ${step.bg1};">
+        <div class="focus-dot"></div>
+        <div class="label">${step.label1}</div>
+      </div>
+      <div class="timer-container">
+        <div class="timer-display" id="timer-num">${step.duration}</div>
+        <div class="timer-bar-track">
+          <div class="timer-bar-fill" id="timer-bar" style="width:100%"></div>
+        </div>
+        <div class="timer-hint">Timer dimulai saat kamu masuk mode layar penuh</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="fs-btn" onclick="startFullscreen('${step.bg1}', ${step.duration}, '${step.label1}')">${step.btnText}</button>
+        <button class="btn btn-secondary" id="next-btn" onclick="nextStep()" disabled>Lanjut ke Fase 2 →</button>
+      </div>
+    `;
+  }
+
+  else if (step.action === 'phase2') {
+    actionHTML = `
+      <div class="color-display" style="background: ${step.bg1};">
+        <div class="focus-dot"></div>
+        <div class="label">${step.label1}</div>
+      </div>
+      <div class="timer-container">
+        <div class="timer-display" id="timer-num">${step.duration}</div>
+        <div class="timer-bar-track">
+          <div class="timer-bar-fill" id="timer-bar" style="width:100%"></div>
+        </div>
+        <div class="timer-hint">Amati warna ini selama beberapa detik</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="nextStep()">Lanjut ke Hasil →</button>
+      </div>
+    `;
+    startMiniTimer(step.duration);
+  }
+
+  else if (step.action === 'phase-fusion') {
+    actionHTML = `
+      <div class="split-display">
+        <div class="split-left" style="background: #cc0000;"></div>
+        <div class="split-divider">
+          <div class="focus-crosshair"></div>
+        </div>
+        <div class="split-right" style="background: #006600;"></div>
+      </div>
+      <div class="science-box" style="margin-bottom:24px;">
+        <span class="label">Tips Fusion</span>
+        <p>Bayangkan kamu melihat "menembus" layar. Relakskan otot mata seolah melihat benda yang jauh. Jika muncul tiga kotak, yang tengah adalah fusion. Pertahankan selama mungkin.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="nextStep()">Lihat Hasil →</button>
+      </div>
+    `;
+  }
+
+  else if (step.action === 'result') {
+    const resultBtns = step.results.map((r, i) =>
+      `<button class="result-btn" onclick="selectResult(this, ${r.success || false})">${r.text}</button>`
+    ).join('');
+
+    actionHTML = `
+      <div class="result-options">${resultBtns}</div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goHome()">← Kembali ke Menu</button>
+        <button class="btn btn-secondary" onclick="startExperiment('${Object.keys(experiments).find(k => experiments[k] === currentExp)}')" >Ulangi Eksperimen</button>
+      </div>
+    `;
+  }
+
+  const instructionFormatted = (step.instruction || '').replace(/\n/g, '<br>');
+
+  container.innerHTML = `
+    <button class="back-btn" onclick="goHome()">← Kembali</button>
+    <div class="exp-header">
+      <div class="exp-number">${exp.number}</div>
+      <div class="exp-title" style="color: ${exp.color};">${exp.title}</div>
+      <div class="exp-tagline">${exp.tagline}</div>
+    </div>
+    <div class="step-progress">${bars}</div>
+    <div class="step-panel active">
+      <div class="step-label">— ${step.label}</div>
+      <div class="step-instruction">${instructionFormatted}</div>
+      ${actionHTML}
+    </div>
+    <div class="science-box" style="margin-top: 32px;">
+      <span class="label">Penjelasan Ilmiah</span>
+      <p>${exp.science}</p>
+    </div>
+  `;
+}
+
+function nextStep() {
+  clearTimers();
+  currentStep++;
+  if (currentStep < currentExp.steps.length) {
+    renderStep();
+  }
+}
+
+function selectResult(btn, success) {
+  document.querySelectorAll('.result-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function startMiniTimer(duration) {
+  let remaining = duration;
+  const numEl = () => document.getElementById('timer-num');
+  const barEl = () => document.getElementById('timer-bar');
+
+  timerInterval = setInterval(() => {
+    remaining--;
+    const n = numEl();
+    const b = barEl();
+    if (n) n.textContent = remaining;
+    if (b) b.style.width = ((remaining / duration) * 100) + '%';
+    if (remaining <= 0) clearInterval(timerInterval);
+  }, 1000);
+}
+
+function startFullscreen(color, duration, hint) {
+  const overlay = document.getElementById('fullscreen-overlay');
+  overlay.style.background = color;
+  overlay.classList.add('active');
+
+  document.getElementById('fs-hint').textContent = hint;
+
+  let remaining = duration;
+  const fsTimer = document.getElementById('fs-timer');
+  fsTimer.textContent = remaining;
+
+  fsTimerInterval = setInterval(() => {
+    remaining--;
+    fsTimer.textContent = remaining;
+
+    const timerNum = document.getElementById('timer-num');
+    const timerBar = document.getElementById('timer-bar');
+    if (timerNum) timerNum.textContent = remaining;
+    if (timerBar) timerBar.style.width = ((remaining / duration) * 100) + '%';
+
+    if (remaining <= 5) {
+      fsTimer.style.color = 'rgba(255,255,255,0.5)';
+    }
+
+    if (remaining <= 0) {
+      clearInterval(fsTimerInterval);
+      exitFullscreen();
+      // Enable next button
+      const nextBtn = document.getElementById('next-btn');
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.style.opacity = '1';
+      }
+      const timerNumFinal = document.getElementById('timer-num');
+      if (timerNumFinal) {
+        timerNumFinal.textContent = '✓';
+        timerNumFinal.classList.add('done');
+      }
+    }
+  }, 1000);
+}
+
+function exitFullscreen() {
+  clearInterval(fsTimerInterval);
+  const overlay = document.getElementById('fullscreen-overlay');
+  overlay.classList.remove('active');
+}
+
+function clearTimers() {
+  clearInterval(timerInterval);
+  clearInterval(fsTimerInterval);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') exitFullscreen();
+});
+</script>
+</body>
+</html>
